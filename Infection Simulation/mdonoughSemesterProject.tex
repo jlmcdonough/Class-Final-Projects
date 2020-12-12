@@ -1,0 +1,717 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CMPT 435
+% Fall 2020
+% Semester Project
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from: http://www.LaTeXTemplates.com
+% Original author: % Frits Wenneker (http://www.howtotex.com)
+% License: CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% Modified by Alan G. Labouseur  - alan@labouseur.com
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[letterpaper, 10pt,DIV=13]{scrartcl} 
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm,xfrac} % Math packages
+\usepackage{sectsty} % Allows customizing section commands
+\usepackage{graphicx}
+\usepackage[lined,linesnumbered,commentsnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage{parskip}
+\usepackage{lastpage}
+\usepackage{csquotes}
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{tcolorbox}
+
+\allsectionsfont{\normalfont\scshape} % Make all section titles in default font and small caps.
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{page \thepage\ of \pageref{LastPage}} % Page numbering for right footer
+
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+\setlength\parindent{0pt} % Removes all indentation from paragraphs.
+
+\binoppenalty=3000
+\relpenalty=3000
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+   \normalfont \normalsize 
+   \textsc{CMPT 435 - Fall 2020 - Dr. Labouseur} \\[10pt] % Header stuff.
+   \horrule{0.5pt} \\[0.25cm] 	% Top horizontal rule
+   \huge Semester Project - Infection Simulation  \\     	    % Assignment title
+   \horrule{0.5pt} \\[0.25cm] 	% Bottom horizontal rule
+}
+
+\author{Joseph McDonough \\ \normalsize Joseph.McDonough1@marist.edu}
+
+\date{\normalize{December 11, 2020}}	% Due date.
+
+\begin{document}
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%   start PROBLEM ONE
+%----------------------------------------------------------------------------------------
+\section{The Problem}
+
+In order to attempt to contain a widespread virus, individuals will needed to be tests.  The larger the population is, the most tests that need to be performed.  Eventually there comes a point where there are simply too many people to test and not enough resources to perform that many tests.  One solution to screen a large population is via pooled testing.  Pooled testing gathers multiple samples and combines them together.  Through this process, multiple people can be tested simultaneously.  
+
+In the event at least one person in the pool was positive, a predefined procedure would take place that would either divide the group in half or just go straight to testing each individual in the pool separately.  But if the infection rate is too high, or the pool sizes and divisions are selected poorly, there is a risk that this pooled testing process will require more tests than just testing everyone individually right from the beginning.
+
+The purpose of this simulation is to try and identify the best method to performed pooled testing via trial and error.  In this simulation, all the variables at play can be tweak according to the tester desire.  The end goal being to find the most efficient and cheapest way to test a large population for an illness.
+
+\section{The Simulation}
+
+The simulation is programmed in the Java language with the main method calling all the necessary functions to perform the simulation from start to finish.  The first task is for the user to end the data they want to be passed into the simulation.  The data is requested in the order that follows: population size, infection rate, testing group size, group division amount, and test accuracy.  Upon entering all this information, the user is asked to confirm the following values are correct prior to running.  An option to print the results for each group is given too.  If desired, the simulation will print the tests performed on each individual group.  With this feature, the user can see for themselves the amount of positive tests per group and what group they appeared it.  This information can be useful because if the user notices that almost all groups make its way to individual tests, some tweaking to group sizes might be required.  
+
+Regardless of the user wanting to see each individual group, the simulation will run and print a report in the end that contains the various testing scenarios, the amount of false positive and false negative tests, the total amount of infected people, and the amount of tests that were performed.  
+
+Upon completion, the user has the option to quickly re-run the simulation with the same input data, change the data, or end the simulation.
+
+There is also a built-in help menu that can be accessed at any time during the user input stage by entering "-555".
+
+\subsection{The Assignment}
+The predetermined virus situation had a desired starting group of size eight, with one division before individual tests (i.e. one group of eight $\rightarrow$ two groups of four $\rightarrow$ four or eight individual tests).  The scenarios in which no additional tests were required are denoted as "case one".  Those in which only four individual tests were required (i.e. the only positive tests were in the same subgroup of four people) are marked as "case two".  And lastly those groups that required everyone to have individual tests (i.e. at least one positive tests per subgroup of four people) are considered "case three".
+
+There is also the assumption of 100\% test accuracy so although the amount of false positive and false negative tests will print, it will always be zero.
+
+\subsection{Structure}
+
+The code is broken up into four subsections: user input, create population, perform tests, and print results.
+
+Gathering user input requests five pieces of simulation data: population size, infection rate, testing group size, group division amount, and test accuracy.  All of these elements have their own series of functions that are called to work with each other to make sure all the data is valid and error-checked prior to run-time.   
+
+Creating the population results in ensuring the population is of an appropriate size for the desired group, and if not, fixing it such that it will be.  Then the members are given a number to determine if they are infected or not. Upon determining whether each individual is infected or virus-free, the false positive and false negative cases get determined.  The end result is a Boolean array containing true for infected and false for clean patients.   
+
+To perform testing, the population is divided into the specified group sizes.  If there are no positive tests in the initial group, the function moves onto the next group.  If a positive test does occur in the first group, it delegates that subgroup to a function to handle sub-tests.  If the maximum amount of group divisions have been done, then the function built to perform single tests handles that group.  Upon determining the amount of positive cases as well as the amount of tests performed on the group, the data gets sent to the results functions to be printed.
+
+Prior to the simulation being ran, the user had the option to print out the individual group results.  If that was desired, the outcome of each group is printed as the simulation performs the tests on it.  After the simulation is complete, a final report is presented.  This report contains all the necessary information and samples can be seen in the test cases. 
+
+At the end, there is one more input line where the user determines if they want to run the simulation again with the same numbers, different numbers, or not at all and end the program.
+
+\subsubsection{User Input}
+
+\begin{enumerate}
+   \item Population Size
+   \begin{itemize}
+     \item This is the amount of people that will be tested.
+     \item Input must be a whole number that is greater than zero.
+   \end{itemize}
+      \item Infection Rate
+   \begin{itemize}
+     \item This is the percentage of people that will be infected on average.
+     \item Input is a whole or decimal number between 0.0 and 100.0 (inclusive)
+   \end{itemize}
+      \item Testing Group Size
+   \begin{itemize}
+     \item This is the amount of people that will be tested in the initial testing group
+     \item Input must be a whole number greater than zero but less than or equal to the total population size (e.g. cannot have group size of six on a population of size five).
+   \end{itemize}
+      \item Group Division Amount
+   \begin{itemize}
+     \item This is the amount of times the groups will be split in half if a positive case is found up until individual tests are required.
+     \item Input must be a whole number between zero and the whole number that is ($\log_2 groupSize$) - 1 (inclusive).  This is done so groups can be divided evenly and each time.  Further examples in Appendix 3.1 - 1.
+   \end{itemize}
+      \item Test Accuracy
+   \begin{itemize}
+     \item This is the percentage that represents how accurate the tests are, such that 0\% means all tests are inaccurate and 100\% means all tests are accurate.
+     \item Input is a whole or decimal number between 0.0 and 100.0 (inclusive)
+   \end{itemize}
+\end{enumerate}
+
+\subsubsection{Create Population}
+
+The creation of the population begins with making sure the desired group size is divisible by the population size.  This must be true as each group must have the exact same number of people.  In the event the numbers do not divide evenly, people are added to the population until they are (e.g. request a population of fifteen but a group size of eight.  One additionally person would be added to the population so two even groups of eight people would be achieved) (Appendix 3.2 - 1).  
+
+Once the population size is acquired, each person is assigned a random number between one and 100 (inclusive of both)(Appendix 3.2 - 2).  Then the population gets "infected".  That is if the person's number is less than or equal to the infection rate, they are deemed infected and marked as true, while if the number is greater than the infection rate, they are clean and marked "false".  This is done such that an infection rate of zero would infect zero people since a number equal to or greater than one would always be higher than zero.  Likewise, for an infection rate of 100, every number would be equal to or less than 100, resulting in everyone being infected (Appendix 3.2 - 3).  
+
+To account for inaccuracy in the tests, the infected population is ran through another function.  This function generates a random decimal between 0.0 (inclusive) and 100.0 (exclusive) for each individual.  If that individuals number is greater than the testing accuracy, then their infection status is flipped (i.e. test accuracy is 50\% and the individual was originally marked infected (true) and their decimal number is 87.3.  Their number is greater than the testing accuracy so their status would now appear as clean (false) at the time of test).  A test with 100\% would not have the ability to flip the status of any patient just like a test with 0\% accuracy would flip every patient.  There is a counter that keeps track of the amount of false positives and negatives that occur (Appendix 3.2 - 4). 
+
+\subsubsection{Perform Tests}
+ To perform the tests, there are three functions that need to be called.  The first is what checks the original group.  It takes the current individual in the population and takes that individual and the next members to make up the current group.  These individuals are all checked to see if any of them are marked "true".  If they are all clean and therefore marked "false", there are no need for individual tests and the test count gets incremented by only one.  This instance is also a case one scenario, so that counter is increased by one.  If there are at least one "true" value in this group, the group gets send to the function to handle sub-tests.  This outermost function will only work on groups whose size is that of the user inputted group size.  Regardless of if there are any positives tests, the yet-to-be-evaluated population list is modified to excluded the individuals just tests and the next set of individuals get tested (Appendix 3.3 - 1).
+ 
+ The function to complete the sub-tests will first check to make sure that the required divisions have not yet been made before individual tests.  If the current level exceeds the allotted divide level, that means no more group tests are requested and the simulation must go right to individual tests.  That work gets delegated to another function.  
+ 
+ In the perform sub-tests function, the inputted group gets split in half.  This is expected as the purpose of this function is to identify which half (or possibly both) is the one with the infected person.  Both subgroups are analyzed for the infected ("true") individual.  If found, that group gets recursively calls the sub-tests function for further analysis.  If not found, that means the infected individual must be in the other group and not everyone needs an individual test.  This is a case two scenario and that counter is incremented.  If both groups find an infected individual, that meets the criteria of a case three scenario, in accordance with the assignment directions, and the case three counter reflects that.  Regardless of if an infection is found or not, a line in the group report will print the status of said group (Appendix 3.3 - 2).
+ 
+ The last function that can be reached in the perform tests category is the one that handles individual tests.  This function takes in the for-sure infected subgroup and searches it to identify how many sick individuals are here.  The total infection count gets increased by the number found in this function.  Upon testing each individual in the inputted subgroup, the function sends the data to the results function that handle it and will print the amount of infected individuals in the group report (Appendix 3.3 - 3).
+
+\subsection{The Results}
+
+Below are some sample results and analysis for the tests cases laid out in the assignments directions.  
+
+It is important to note that the "Case (1), Case (2), and Case(3)" simulation output only make sense and accurately work when the group size is eight and the division amount is one (i.e. the requirements laid out in the directions).  Although the simulation works correctly for any acceptable input, these case values will not.  The remaining data is however accurate and makes sense regardless of the group size and division amount amongst other variables.
+
+\subsubsection{Test Cases}
+
+For all test cases that will be examined here, the population size varies, but the rest of the data will remain consistent throughout.  The infection rate will remain at 2\%.  The group size is eight tests and will be divided one time, such that sub-tests will be done on two groups of four samples, followed by individual tests on the group of four that need it (8 $\rightarrow$ 4 $\rightarrow$ 1).  The test is also believed to be 100\% accurate such that no false positives or false negatives could possibly occur.
+
+There are three possible cases for each group.  
+
+Case one is when the group tests negative and no additional tests are required.  
+
+Case two is when the initial group tests positive and the only one of the two groups of four people test positive.  This case results in seven total tests, meaning six additional tests were required.  
+
+Case three is when the initial group tests positive and both subgroups of four people also test positive.  This means that every individual in this group ends up being tested, resulting in ten additional tests were performed.
+
+With an infection rate of 2\%, around 84.566\% of the pooled tests are expected to fall under case one, 14.869\% are expected to be of case two, and the last 0.565\% would be case three.
+
+
+\subsubsection{Population of 1,000 People}
+
+With a population of 1,000 people and testing group sizes of eight people, there would be 125 groups made.  Therefore, about 106 instances of case one are expected to occur, about 18 instances of case two, and one instance of case three.  
+
+As case two results in six additional tests, and case three results in ten additional tests, around 243 total tests are the expected amount.
+
+After running the simulation hundreds of times, these numbers were achieved more often than not.  A few instances are shown below
+
+\begin{displayquote}
+\begin{center}
+    Instance where expected results were achieved
+\end{center}
+Case (1): 106 - instances requiring no partial tests\\
+Case (2): 18 - instances requiring six additional tests\\
+Case (3): 1 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 1000 people, 21 tested positive for the infection.\\
+243 tests to screen a population of 1000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+\\
+\begin{center}
+\rule{12cm}{.4pt}
+\end{center}
+\\
+\begin{displayquote}
+\begin{center}
+    Instance where more positive tests than expected
+\end{center}
+Case (1): 97 - instances requiring no partial tests\\
+Case (2): 26 - instances requiring six additional tests\\
+Case (3): 2 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 1000 people, 31 tested positive for the infection.\\
+301 tests to screen a population of 1000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+\\
+\begin{center}
+\rule{12cm}{.4pt}
+\end{center}
+\\
+\begin{displayquote}
+\begin{center}
+    Instance where less positive tests than expected
+\end{center}
+Case (1): 110 - instances requiring no partial tests\\
+Case (2): 15 - instances requiring six additional tests\\
+Case (3): 0 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 1000 people, 15 tested positive for the infection.\\
+215 tests to screen a population of 1000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+
+
+\subsubsection{Population of 10,000 People}
+
+With a population of 10,000 people and testing group sizes of eight people, there would be 1,250 groups made.  Therefore, about 1,057 instances of case one are expected to occur, about 186 instances of case two, and seven instances of case three.  
+
+As case two results in six additional tests, and case three results in ten additional tests, around 2,382 total tests are the expected amount.
+
+After running the simulation hundreds of times, these numbers were achieved more often than not.  A few instances are shown below
+
+\begin{displayquote}
+\begin{center}
+    Instance where expected results were acheived 
+\end{center}
+Case (1): 1063 - instances requiring no partial tests\\
+Case (2): 180 - instances requiring six additional tests\\
+Case (3): 7 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 10000 people, 203 tested positive for the infection.\\
+2400 tests to screen a population of 10000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+\\
+\begin{center}
+\rule{12cm}{.4pt}
+\end{center}
+\\
+\begin{displayquote}
+\begin{center}
+    Instance where more positive tests than expected
+\end{center}
+Case (1): 1046 - instances requiring no partial tests\\
+Case (2): 194 - instances requiring six additional tests\\
+Case (3): 10 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 10000 people, 220 tested positive for the infection.\\
+2514 tests to screen a population of 10000 people for a disease with 2.0\% infection rate.
+\end{displayquote}
+\\
+\begin{center}
+\rule{12cm}{.4pt}
+\end{center}
+\\
+\begin{displayquote}
+\begin{center}
+    Instance where less positive tests than expected
+\end{center}
+Case (1): 1101 - instances requiring no partial tests\\
+Case (2): 143 - instances requiring six additional tests\\
+Case (3): 6 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 10000 people, 160 tested positive for the infection.\\
+2168 tests to screen a population of 10000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+
+
+
+
+
+\subsubsection{Population of 100,000 People}
+
+With a population of 100,000 people and testing group sizes of eight people, there would be 12,500 groups made.  Therefore, about 10,571 instances of case one are expected to occur, about 1,859 instances of case two, and 70 instance of case three.  
+
+As case two results in six additional tests, and case three results in ten additional tests, around 23,770 total tests are the expected amount.
+
+After running the simulation hundreds of times, these numbers were achieved more often than not.  A few instances are shown below
+
+\begin{displayquote}
+\begin{center}
+    Instance where expected results were achieved
+\end{center}
+Case (1): 10606 - instances requiring no partial tests\\
+Case (2): 1823 - instances requiring six additional tests\\
+Case (3): 71 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 100000 people, 2022 tested positive for the infection.\\
+24148 tests to screen a population of 100000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+\\
+\begin{center}
+\rule{12cm}{.4pt}
+\end{center}
+\\
+\begin{displayquote}
+\begin{center}
+    Instance where more positive tests than expected
+\end{center}
+Case (1): 10608 - instances requiring no partial tests\\
+Case (2): 1802 - instances requiring six additional tests\\
+Case (3): 90 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 100000 people, 2032 tested positive for the infection.\\
+24212 tests to screen a population of 100000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+\\
+\begin{center}
+\rule{12cm}{.4pt}
+\end{center}
+\\
+\begin{displayquote}
+\begin{center}
+    Instance where less positive tests than expected
+\end{center}
+Case (1): 10649 - instances requiring no partial tests\\
+Case (2): 1782 - instances requiring six additional tests\\
+Case (3): 69 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 100000 people, 1982 tested positive for the infection.\\
+23882 tests to screen a population of 100000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+
+
+\subsubsection{Population of 1,000,000 People}
+
+With a population of 1,000,000 people and testing group sizes of eight people, there would be 125,000 groups made.  Therefore, about 105,708 instances of case one are expected to occur, about 18,586 instances of case two, and 706 instance of case three.  
+
+As case two results in six additional tests, and case three results in ten additional tests, around 237,700 total tests are the expected amount.
+
+After running the simulation hundreds of times, these numbers were achieved more often than not.  A few instances are shown below
+
+\begin{displayquote}
+\begin{center}
+    Instance where expected results were achieved
+\end{center}
+Case (1): 106263 - instances requiring no partial tests\\
+Case (2): 108039 - instances requiring six additional tests\\
+Case (3): 698 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 1000000 people, 20007 tested positive for the infection.\\
+240214 tests to screen a population of 1000000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+\\
+\begin{center}
+\rule{12cm}{.4pt}
+\end{center}
+\\
+\begin{displayquote}
+\begin{center}
+    Instance where more positive tests than expected
+\end{center}
+Case (1): 106128 - instances requiring no partial tests\\
+Case (2): 18078 - instances requiring six additional tests\\
+Case (3): 794 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 1000000 people, 20251 tested positive for the infection.\\
+241408 tests to screen a population of 1000000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+\\
+\begin{center}
+\rule{12cm}{.4pt}
+\end{center}
+\\
+\begin{displayquote}
+\begin{center}
+    Instance where less positive tests than expected
+\end{center}
+Case (1): 106490 - instances requiring no partial tests\\
+Case (2): 17799 - instances requiring six additional tests\\
+Case (3): 711 - instances requiring ten additional tests\\
+-----------------------------------------------------------------------------------------\\
+0 false positive tests were identified due to the 100.0\% test accuracy rate\\
+0 false negative tests were identified due to the 100.0\% test accuracy rate\\
+-----------------------------------------------------------------------------------------\\
+Out of a population of 1000000 people, 19843 tested positive for the infection.\\
+238904 tests to screen a population of 1000000 people for a disease with 2.0\% infection rate.\\
+\end{displayquote}
+
+\subsubsection{Result Analysis}
+All in all, pooled testing is a good way to save the amount of tests needed, so long as the infection rate is low enough and group size and division are optimized in such a way.  For an infection rate of 2\%, which at the time of writing, is higher than the current Covid-19 infection rate of .6\% on a world-wide scale, but less than the United States infection rate of about 3\%.  Regardless, an infection rate of 2\% is on the higher than most transmittable viruses.  Therefore the method of initial group sizes of eight that go down to four before individual tests would work on a worldwide scale.  And for infections with a lower infection rate, the initial group size could be raised, and this simulation has the ability to test those variations.  
+
+With the numbers used in these test cases, in almost every simulation, the pooled testing approach saved about 75\% of total tests in comparison to only performing individual tests.  To test a million people individually, it would take a million tests, but with the pooled approach, 237,700 was the expected amount of tests needed.  That saves around 763,300 tests on average.  It becomes obvious that pooled test save a great amount of resources and time in a real-world scenario.
+
+\section{Appendix}
+
+For further comments on the lines of code, see the original code itself.
+
+\subsection{User Input}
+ 1
+ \begin{tcolorbox}
+	Group Division Amount Examples: \\
+		Group size 16 with division amount of 3: 16$\rightarrow$ 8 $\rightarrow$ 4 $\rightarrow$ 2 $\rightarrow$ 1 \\
+		Group size 16 with division amount of 2: 16 $\rightarrow$ 8 $\rightarrow$ 4 $\rightarrow$ 1 \\
+		Group size 16 with division amount of 1: 16 $\rightarrow$ 8 $\rightarrow$ 1 \\
+		Group size 16 with division amount of 0: 16 $\rightarrow$ 1 \\
+		Group size 16 with division amount of 4: 16 $\rightarrow$ 8 $\rightarrow$ 4 $\rightarrow$ 2 $\rightarrow$ 1 $\rightarrow$ .5 
+		   \begin{itemize}
+		       \item ERROR because can't go any further than group size 1  
+		   \end{itemize} 
+		Group size 15 with division amount of 2: 15 $\rightarrow$ 7.5 
+		    \begin{itemize}
+		       \item ERROR because 15 does not divide evenly  
+		   \end{itemize} 
+ \end{tcolorbox}
+
+\subsection{Create Population}
+1
+\begin{center}
+\begin{tabular}{l}
+\begin{lstlisting}[numbers=left,firstnumber=327,stepnumber=1,escapeinside={\%}{\%}]
+public static void divideIntoGroups()
+{
+    int difference = popSize MODULUS groupSize;
+    if(difference != 0 )
+    {
+        int adjustment = groupSize - difference;
+        popSize += adjustment;
+        System.out.println("\n*NOTE*\n In order for the population to
+        be divided into even groups, " + "the population size has been
+        increased by " + adjustment + " to a " + "total of " + popSize);
+    }
+}
+\end{lstlisting}
+\end{tabular}
+\end{center}\textbf{}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+2
+\begin{center}
+\begin{tabular}{l}
+\begin{lstlisting}[numbers=left,firstnumber=342,stepnumber=1,escapeinside={\%}{\%}]
+public static boolean[] createPopulation()
+{
+    Random rand = new Random();
+    int[] cleanPop = new int[popSize];
+
+    for(int i = 0; i < cleanPop.length; i++)
+    {
+        cleanPop[i] = rand.nextInt(100) + 1;
+    }
+
+    return infectPopulation(cleanPop);
+}
+\end{lstlisting}
+\end{tabular}
+\end{center}\textbf{}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+3
+\begin{center}
+\begin{tabular}{l}
+\begin{lstlisting}[numbers=left,firstnumber=357,stepnumber=1,escapeinside={\%}{\%}]
+public static boolean[] infectPopulation(int[] cleanPop)
+{
+    boolean[] infectedPop = new boolean[popSize];
+
+    for(int i = 0; i < infectedPop.length; i++)
+    {
+        if(cleanPop[i] <= infectionRate)
+            infectedPop[i] = true;
+        else
+            infectedPop[i] = false;
+    }
+
+    return identifyFalseTests(infectedPop);
+}
+\end{lstlisting}
+\end{tabular}
+\end{center}\textbf{}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+4
+\begin{center}
+\begin{tabular}{l}
+\begin{lstlisting}[numbers=left,firstnumber=377,stepnumber=1,escapeinside={\%}{\%}]
+static int falseNegative = 0;
+static int falsePositive = 0;
+
+public static boolean[] identifyFalseTests(boolean[] falsePop)
+{
+    Random rand = new Random();
+
+    for(int i = 0; i < popSize; i++)
+    {
+        int wholeRand = rand.nextInt(100);
+        double decimalRand = rand.nextDouble();
+        double falseNum = wholeRand + decimalRand;
+
+        if(falsePop[i] && falseNum > testAccuracy)
+        {
+            falsePop[i] = false;
+            falseNegative++;
+        }
+        else if(!falsePop[i] && falseNum > testAccuracy)
+        {
+            falsePop[i] = true;
+            falsePositive++;
+        }
+    }
+
+    return falsePop;
+}
+\end{lstlisting}
+\end{tabular}
+\end{center}\textbf{}
+
+\subsection{Perform Tests}
+
+1
+\begin{center}
+\begin{tabular}{l}
+\begin{lstlisting}[numbers=left,firstnumber=428,stepnumber=1,escapeinside={\%}{\%}]
+ public static void performTests(boolean[] pop)
+{
+    boolean infectionFound = false;
+    int whileIndex = 0;                  
+    int divideLevel = divideCount;  
+    boolean[] evalPop = Arrays.copyOfRange(pop, 0, groupSize);   
+    int currLevel = 0;
+
+    while(whileIndex < popSize) 
+    {
+
+        testCount++;
+
+        if(userWantsCaseResults)
+            System.out.println("\n" + divider + "\nConducting tests on patients " + (whileIndex + 1) + " through " + (whileIndex + groupSize) + "\n");
+
+        for(int i = 0; i < groupSize; i++)
+        {
+            if(evalPop[i])
+            {
+                infectionFound = true;
+            }
+        }
+
+        testResults(currLevel, infectionFound);
+
+        if(infectionFound && currLevel  < divideCount)                    performSubTests(evalPop, currLevel + 1, groupSize);
+        else if(infectionFound && currLevel == divideCount)                performSingleTests(evalPop, currLevel + 1, groupSize);
+        else
+        {
+            currLevel = 0;
+            caseOne++;
+        }
+
+        whileIndex += groupSize;
+        evalPop = Arrays.copyOfRange(pop, 0 + whileIndex, groupSize + whileIndex);
+        infectionFound = false;  
+
+    }
+}
+\end{lstlisting}
+\end{tabular}
+\end{center}\textbf{}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+2
+\begin{center}
+\begin{tabular}{l}
+\begin{lstlisting}[numbers=left,firstnumber=474,stepnumber=1,escapeinside={\%}{\%}]
+public static void performSubTests(boolean[] subgroup, int currLevel, int currGroupSize)
+{
+    if(currLevel > divideCount)
+        performSingleTests(subgroup, currLevel, currGroupSize);
+    else
+    {
+        boolean[] subGroup1 = Arrays.copyOfRange(subgroup, 0, currGroupSize / 2 );                      
+        boolean[] subGroup2 = Arrays.copyOfRange(subgroup, currGroupSize / 2, currGroupSize);         
+        boolean subGroup1Infect = false;
+        boolean subGroup2Infect = false;
+
+        testCount++;
+        int i = 0;
+        while(!subGroup1Infect && i < subGroup1.length)
+        {
+            if(subGroup1[i])
+                subGroup1Infect = true;
+            else
+                i++;
+        }
+
+        if(!subGroup1Infect)
+            testResults(currLevel, false);
+        else
+        {
+            testResults(currLevel, true);
+            performSubTests(subGroup1, currLevel + 1, currGroupSize / 2);
+        }
+
+        testCount++;
+        int j = 0;
+        while(!subGroup2Infect && j < subGroup2.length)
+        {
+            if(subGroup2[j])
+                subGroup2Infect = true;
+            else
+                j++;
+        }
+
+        if(!subGroup2Infect)
+            testResults(currLevel, false);
+        else
+        {
+            testResults(currLevel, true);
+            performSubTests(subGroup2, currLevel + 1, currGroupSize / 2);
+        }
+
+        if(subGroup1Infect && subGroup2Infect)
+            caseThree++;
+        else if(subGroup1Infect ^ subGroup2Infect)
+            caseTwo++;
+    }
+}
+\end{lstlisting}
+\end{tabular}
+\end{center}\textbf{}
+
+\par\noindent\rule{\textwidth}{0.4pt}
+
+3
+\begin{center}
+\begin{tabular}{l}
+\begin{lstlisting}[numbers=left,firstnumber=529,stepnumber=1,escapeinside={\%}{\%}]
+public static void performSingleTests(boolean[] subgroup, int currLevel, int currGroupSize)
+{
+    int infectPrevious = infectionCount;
+    int newInfect = 0;
+    ArrayList<Boolean> singleTest = new ArrayList<Boolean>();
+
+    for(boolean b : subgroup)
+        singleTest.add(b);
+
+    for(int i = 0; i < singleTest.size(); i++)
+    {
+        if(singleTest.get(i))
+            infectionCount++;
+    }
+
+    newInfect = infectionCount - infectPrevious;                   
+    singleTestResults(currLevel, newInfect);
+
+    testCount += singleTest.size();
+}
+\end{lstlisting}
+\end{tabular}
+\end{center}\textbf{}
+
+\end{document}
